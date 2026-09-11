@@ -16,6 +16,7 @@ function App() {
         gameState,
         gameResultModal,
         lastMove,
+        moveHistory,
         mySessionId,
         mySide,
         ready,
@@ -23,6 +24,18 @@ function App() {
         leave,
         sendMove
     } = useWebSocket();
+
+    // Mở khóa âm thanh ở lần click đầu tiên của user (tránh trình duyệt block)
+    React.useEffect(() => {
+        const handleFirstClick = () => {
+            import('./utils/soundPlayer').then(({ soundPlayer }) => {
+                soundPlayer.unlock();
+            });
+            window.removeEventListener('click', handleFirstClick);
+        };
+        window.addEventListener('click', handleFirstClick);
+        return () => window.removeEventListener('click', handleFirstClick);
+    }, []);
 
     return (
         <div className="app-container">
@@ -52,6 +65,7 @@ function App() {
                     mySessionId={mySessionId}
                     gameResultModal={gameResultModal}
                     lastMove={lastMove}
+                    moveHistory={moveHistory}
                     onMove={sendMove}
                     leave={leave}
                 />

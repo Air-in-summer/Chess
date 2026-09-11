@@ -1,0 +1,77 @@
+.move-history-container {
+    width: 100%;
+    height: 100%;
+    background: rgba(26, 26, 46, 0.6);
+    border: 1px solid #4a4a6a;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.history-header {
+    display: flex;
+    background: rgba(42, 42, 62, 0.8);
+    padding: 8px 12px;
+    font-weight: bold;
+    border-bottom: 1px solid #4a4a6a;
+    color: #e6e6e6;
+    font-size: 0.95rem;
+}
+
+.history-body {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 4px 0;
+}
+
+.history-row {
+    display: flex;
+    padding: 6px 12px;
+    font-size: 0.95rem;
+    color: #cccccc;
+    transition: background 0.2s;
+}
+
+.history-row:hover {
+    background: rgba(42, 42, 62, 0.6);
+}
+
+/* Zebra striping */
+.history-row:nth-child(even) {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.history-row:nth-child(even):hover {
+    background: rgba(42, 42, 62, 0.6);
+}
+
+.col-stt {
+    width: 40px;
+    color: #888888;
+    text-align: center;
+}
+
+.col-red {
+    flex: 1;
+    text-align: center;
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.col-black {
+    flex: 1;
+    text-align: center;
+    color: #bdc3c7;
+    font-weight: bold;
+}
+
+.history-empty {
+    text-align: center;
+    padding: 20px;
+    color: #666666;
+    font-style: italic;
+    font-size: 0.9rem;
+}

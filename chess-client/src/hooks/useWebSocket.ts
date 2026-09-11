@@ -1,9 +1,16 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { wsService } from '../services/websocket';
+import { soundPlayer } from '../utils/soundPlayer';
+import { generateNotation } from '../utils/notation';
 import { MessageType, Side, Piece } from '../types/protocol';
 import type { ServerMessage, RoomPayload, GamePayload, PlayerRole } from '../types/protocol';
 
 export type ScreenType = 'HOME' | 'LOBBY' | 'GAME';
+
+export interface MoveRecord {
+    red: string;
+    black: string;
+}
 
 export function useWebSocket() {
     const [connected, setConnected] = useState(false);
@@ -16,8 +23,10 @@ export function useWebSocket() {
     
     // Game State
     const [gameState, setGameState] = useState<GamePayload | null>(null);
+    const gameStateRef = useRef<GamePayload | null>(null);
     const [gameResultModal, setGameResultModal] = useState<GamePayload | null>(null);
     const [lastMove, setLastMove] = useState<{fromX: number, fromY: number, toX: number, toY: number} | null>(null);
+    const [moveHistory, setMoveHistory] = useState<MoveRecord[]>([]);
 
     const myRoleRef = useRef(myRole);
     
@@ -78,9 +87,11 @@ export function useWebSocket() {
                 case MessageType.START_GAME: {
                     if (msg.gamePayload) {
                         setGameState(msg.gamePayload);
+                        gameStateRef.current = msg.gamePayload;
                         setCurrentScreen('GAME');
                         setGameResultModal(null);
                         setLastMove(null);
+                        setMoveHistory([]);
                     }
                     break;
                 }
@@ -96,25 +107,56 @@ export function useWebSocket() {
                             });
                         }
 
-                        setGameState(prev => {
-                            if (!prev) return prev;
-                            const newBoard = prev.board ? [...prev.board.map(row => [...row])] : [];
+                        // Phát âm thanh
+                        if (p.capturedPiece) {
+                            soundPlayer.playCapture();
+                        } else {
+                            soundPlayer.playMove();
+                        }
+
+                        if (p.checkSide) {
+                            setTimeout(() => soundPlayer.playCheck(), 300);
+                        }
+
+                        // 1. Tính toán biên bản DỰA TRÊN STATE HIỆN TẠI (trước khi di chuyển)
+                        if (gameStateRef.current && gameStateRef.current.board && p.fromX !== undefined && p.fromY !== undefined && p.toX !== undefined && p.toY !== undefined && p.piece) {
+                            const isRedMoved = !p.redTurn;
+                            const notationText = generateNotation(gameStateRef.current.board, p.fromX, p.fromY, p.toX, p.toY, p.piece);
                             
-                            if (newBoard.length > 0 && p.fromX !== undefined && p.fromY !== undefined && p.toX !== undefined && p.toY !== undefined) {
-                                const piece = newBoard[p.fromX][p.fromY];
-                                newBoard[p.fromX][p.fromY] = Piece.EMPTY;
-                                newBoard[p.toX][p.toY] = piece;
-                            }
+                            // Cập nhật Move History (Nằm ngoài StrictMode setGameState)
+                            setMoveHistory(history => {
+                                if (isRedMoved) {
+                                    return [...history, { red: notationText, black: '' }];
+                                } else {
+                                    if (history.length > 0) {
+                                        const newHistory = [...history];
+                                        newHistory[newHistory.length - 1] = {
+                                            ...newHistory[newHistory.length - 1],
+                                            black: notationText
+                                        };
+                                        return newHistory;
+                                    }
+                                    return [{ red: '', black: notationText }];
+                                }
+                            });
+
+                            // 2. Cập nhật gameStateRef ĐỒNG BỘ
+                            const newBoard = gameStateRef.current.board.map(row => [...row]);
+                            newBoard[p.fromX][p.fromY] = Piece.EMPTY;
+                            newBoard[p.toX][p.toY] = p.piece;
                             
-                            return {
-                                ...prev,
+                            gameStateRef.current = {
+                                ...gameStateRef.current,
                                 board: newBoard,
                                 redTurn: p.redTurn,
                                 redTime: p.redTime,
                                 blackTime: p.blackTime,
                                 checkSide: p.checkSide
                             };
-                        });
+
+                            // 3. Trigger React re-render
+                            setGameState(gameStateRef.current);
+                        }
                     }
                     break;
                 }
@@ -149,8 +191,10 @@ export function useWebSocket() {
         setMyRole(null);
         setRoomState(null);
         setGameState(null);
+        gameStateRef.current = null;
         setGameResultModal(null);
         setLastMove(null);
+        setMoveHistory([]);
         setErrorMsg(null);
     }, []);
 
@@ -187,6 +231,7 @@ export function useWebSocket() {
         gameState,
         gameResultModal,
         lastMove,
+        moveHistory,
         errorMsg,
         createRoom,
         joinRoom,

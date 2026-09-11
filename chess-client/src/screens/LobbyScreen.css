@@ -28,7 +28,7 @@
 }
 
 .room-code-box {
-    background: #1a1a2e;
+    background: transparent;
     border: 2px dashed #d4af37;
     border-radius: 8px;
     padding: 15px;
@@ -61,7 +61,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #1a1a2e;
+    background: transparent;
     border: 1px solid #36364f;
     border-radius: 8px;
     padding: 15px 20px;

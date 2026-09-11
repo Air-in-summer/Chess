@@ -208,25 +208,46 @@ function drawStarMarks(ctx: CanvasRenderingContext2D) {
 // ===== VẼ QUÂN CỜ =====
 
 /** Vẽ tất cả quân cờ trên bàn cờ */
-export function drawPieces(ctx: CanvasRenderingContext2D, board: Piece[][], isFlipped: boolean) {
+export function drawPieces(ctx: CanvasRenderingContext2D, board: Piece[][], isFlipped: boolean, checkSide?: string | null) {
     for (let row = 0; row < 10; row++) {
         for (let col = 0; col < 9; col++) {
             const piece = board[row][col];
             if (piece && piece !== Piece.EMPTY) {
-                drawSinglePiece(ctx, piece, row, col, isFlipped);
+                const sideUpper = checkSide ? checkSide.toUpperCase() : null;
+                const isChecked = (piece === Piece.rG && sideUpper === 'RED') || 
+                                  (piece === Piece.bG && sideUpper === 'BLACK');
+                drawSinglePiece(ctx, piece, row, col, isFlipped, isChecked);
             }
         }
     }
 }
 
 /** Vẽ 1 quân cờ tại giao điểm (row, col) */
-function drawSinglePiece(ctx: CanvasRenderingContext2D, piece: Piece, row: number, col: number, isFlipped: boolean) {
+function drawSinglePiece(ctx: CanvasRenderingContext2D, piece: Piece, row: number, col: number, isFlipped: boolean, isChecked: boolean = false) {
     const info = PIECE_MAP[piece];
     if (!info) return;
 
     const { px, py } = toPixel(row, col, isFlipped);
 
     ctx.save();
+
+    // --- Hiệu ứng Chiếu Tướng (Glow Đỏ Gắt) ---
+    if (isChecked) {
+        ctx.beginPath();
+        ctx.arc(px, py, PIECE_RADIUS + 12, 0, Math.PI * 2);
+        // Nền đỏ đậm
+        ctx.fillStyle = 'rgba(255, 0, 0, 0.7)';
+        ctx.shadowColor = '#ff0000';
+        ctx.shadowBlur = 30; // Phát sáng mạnh
+        ctx.fill();
+        
+        // Viền đỏ tươi bao quanh
+        ctx.strokeStyle = '#ff0000';
+        ctx.lineWidth = 4;
+        ctx.stroke();
+        
+        ctx.shadowBlur = 0; // Reset shadow
+    }
 
     // --- Bóng đổ ---
     ctx.beginPath();

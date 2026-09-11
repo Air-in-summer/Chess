@@ -49,17 +49,37 @@ export const ChessBoard: React.FC<Props> = ({ board, mySide, isMyTurn, onMove, l
         }
 
         // 3. Vẽ quân cờ
-        drawPieces(ctx, board, isFlipped);
+        drawPieces(ctx, board, isFlipped, checkSide);
 
         // 4. Vẽ selection + legal moves
         if (selectedPiece) {
             drawSelection(ctx, selectedPiece.row, selectedPiece.col, isFlipped);
             drawLegalMoves(ctx, legalMoves, board, isFlipped);
         }
-    }, [board, isFlipped, selectedPiece, legalMoves, lastMove]);
+    }, [board, isFlipped, selectedPiece, legalMoves, lastMove, checkSide]);
 
     // Vẽ lại khi state thay đổi
     useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+
+        const dpr = window.devicePixelRatio || 1;
+        
+        // CSS Style (Kích thước hiển thị)
+        // Dùng max-width và height auto để giữ nguyên tỷ lệ (aspect-ratio) khi bị co nhỏ
+        canvas.style.width = `${CANVAS_WIDTH}px`;
+        canvas.style.maxWidth = '100%';
+        canvas.style.height = 'auto';
+        
+        // Kích thước bộ nhớ đệm (Physical pixels)
+        canvas.width = CANVAS_WIDTH * dpr;
+        canvas.height = CANVAS_HEIGHT * dpr;
+
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+            ctx.scale(dpr, dpr); // Scale toàn bộ context theo DPI
+        }
+
         redraw();
     }, [redraw]);
 
@@ -130,11 +150,6 @@ export const ChessBoard: React.FC<Props> = ({ board, mySide, isMyTurn, onMove, l
                 className="chessboard-canvas"
                 onClick={handleClick}
             />
-            {checkSide && (
-                <div className="check-indicator">
-                    Chiếu Tướng!
-                </div>
-            )}
         </div>
     );
 };

@@ -1,0 +1,66 @@
+.game-settings-container {
+    position: relative;
+    display: inline-block;
+    align-self: flex-end; /* Nằm gọn về góc phải nếu đặt trong flex */
+}
+
+.settings-btn {
+    background: #232336;
+    border: 1px solid #36364f;
+    border-radius: 8px;
+    color: white;
+    font-size: 1.2rem;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.settings-btn:hover {
+    background: #36364f;
+    border-color: #d4af37; /* Viền vàng khi hover */
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
+}
+
+.settings-popover {
+    position: absolute;
+    bottom: 120%; /* Nổi lên trên cái nút */
+    right: 0;
+    background: #232336;
+    border: 1px solid #4a4a6a;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 160px;
+    z-index: 100;
+}
+
+.menu-item {
+    background: transparent;
+    border: none;
+    color: #e6e6e6;
+    text-align: left;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.2s;
+    font-weight: 500;
+}
+
+.menu-item:hover {
+    background: #36364f;
+}
+
+.surrender-btn {
+    color: #e74c3c; /* Màu đỏ cảnh báo */
+}
+
+.surrender-btn:hover {
+    background: rgba(231, 76, 60, 0.15);
+}

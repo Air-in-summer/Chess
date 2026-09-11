@@ -4,6 +4,9 @@ import type { GamePayload } from '../types/protocol';
 import { ChessBoard } from '../components/ChessBoard';
 import { PlayerInfo } from '../components/PlayerInfo';
 import { GameOverModal } from '../components/GameOverModal';
+import { GameSettings } from '../components/GameSettings';
+import { MoveHistory } from '../components/MoveHistory';
+import type { MoveRecord } from '../hooks/useWebSocket';
 import './GameScreen.css';
 
 interface Props {
@@ -12,12 +15,13 @@ interface Props {
     mySessionId: string | null;
     gameResultModal: GamePayload | null;
     lastMove: { fromX: number; fromY: number; toX: number; toY: number } | null;
+    moveHistory: MoveRecord[];
     onMove: (fromX: number, fromY: number, toX: number, toY: number) => void;
     leave: () => void;
 }
 
 export const GameScreen: React.FC<Props> = ({ 
-    gameState, mySide, mySessionId, gameResultModal, lastMove, onMove, leave 
+    gameState, mySide, mySessionId, gameResultModal, lastMove, moveHistory, onMove, leave 
 }) => {
     if (!gameState || !mySide) return <div style={{ color: 'white', textAlign: 'center', marginTop: '50px' }}>Đang tải bàn cờ...</div>;
 
@@ -37,8 +41,12 @@ export const GameScreen: React.FC<Props> = ({
                     isMe={false}
                 />
 
-                <div className="sidebar-middle">
-                    {/* Khu vực trống để dành cho Chat hoặc Lịch sử nước đi sau này */}
+                <div className="sidebar-middle" style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px', marginBottom: '10px' }}>
+                    <MoveHistory history={moveHistory} />
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
+                    <GameSettings onSurrender={leave} />
                 </div>
 
                 {/* Bottom: Tôi */}
