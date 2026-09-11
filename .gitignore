@@ -1,0 +1,65 @@
+# ==========================================
+# GITHUB IGNORE FILE FOR MONOREPO PROJECT
+# ==========================================
+
+# 1. OS & Tạm (OS & Temp Files)
+# ------------------------------------------
+.DS_Store
+Thumbs.db
+*.sw?
+*~
+*.tmp
+*.bak
+
+# 2. IDE & Editor (VS Code, IntelliJ, Eclipse, NetBeans)
+# ------------------------------------------
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/*
+!.vscode/extensions.json
+.classpath
+.project
+.settings/
+.apt_generated/
+.factorypath
+.springBeans
+.sts4-cache/
+/nbproject/private/
+/nbbuild/
+/.nb-gradle/
+
+# 3. Backend (Java / Spring Boot / Maven)
+# ------------------------------------------
+chess-server/target/
+chess-server/.mvn/wrapper/maven-wrapper.jar
+*.log
+*.class
+*.jar
+*.war
+*.ear
+HELP.md
+
+# 4. Frontend (Node.js / React / Vite)
+# ------------------------------------------
+chess-client/node_modules/
+chess-client/dist/
+chess-client/dist-ssr/
+chess-client/*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# 5. Dữ liệu môi trường (Quan trọng! Không được commit)
+# ------------------------------------------
+.env
+.env.*
+!.env.example
+
+
+# 6. Khác
+# ------------------------------------------
+logs/

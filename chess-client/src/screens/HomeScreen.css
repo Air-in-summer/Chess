@@ -1,0 +1,156 @@
+.home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    background-color: #1a1a2e; /* Dark wood base */
+    color: #e6e6e6;
+    font-family: 'Inter', sans-serif;
+}
+
+.title {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    color: #d4af37; /* Gold accent */
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.connection-status {
+    margin-bottom: 30px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.connection-status.connected {
+    background-color: rgba(46, 204, 113, 0.2);
+    color: #2ecc71;
+}
+
+.connection-status.disconnected {
+    background-color: rgba(231, 76, 60, 0.2);
+    color: #e74c3c;
+}
+
+.card {
+    background: #232336;
+    border: 1px solid #36364f;
+    border-radius: 12px;
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.action-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.action-section h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+    color: #ffffff;
+}
+
+.action-section p {
+    margin-bottom: 20px;
+    color: #9aa0a6;
+    font-size: 0.9rem;
+}
+
+.join-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 15px;
+}
+
+input {
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #4a4a6a;
+    background: #1a1a2e;
+    color: #ffffff;
+    font-size: 1rem;
+    text-align: center;
+    text-transform: uppercase;
+    transition: border-color 0.2s;
+}
+
+input:focus {
+    outline: none;
+    border-color: #d4af37;
+}
+
+.btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    width: 100%;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn.primary {
+    background: linear-gradient(135deg, #d4af37, #b58b22);
+    color: #1a1a2e;
+}
+
+.btn.primary:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+.btn.secondary {
+    background: #36364f;
+    color: #ffffff;
+}
+
+.btn.secondary:not(:disabled):hover {
+    background: #4a4a6a;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 30px 0;
+    color: #5f5f7a;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #36364f;
+}
+
+.divider span {
+    padding: 0 15px;
+}
+
+.error-message {
+    margin-top: 20px;
+    padding: 10px;
+    background: rgba(231, 76, 60, 0.1);
+    border-left: 4px solid #e74c3c;
+    color: #ff6b6b;
+    font-size: 0.9rem;
+    border-radius: 4px;
+}

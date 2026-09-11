@@ -1,0 +1,29 @@
+.game-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    gap: 40px;
+    width: 100%;
+}
+
+.sidebar {
+    width: 300px;
+    height: 620px; /* Chiều cao khớp với CANVAS_HEIGHT của bàn cờ (540 + 80) */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.sidebar-middle {
+    flex: 1;
+    /* Dành chỗ cho tương lai */
+}
+
+.board-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -1,0 +1,102 @@
+.player-info-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #232336;
+    border: 1px solid #36364f;
+    border-radius: 8px;
+    padding: 12px 20px;
+    margin: 0;
+    width: 100%;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.player-info-container.active-turn {
+    border-color: #d4af37;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+}
+
+.player-details {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    font-family: 'Noto Serif SC', "SimSun", serif;
+    background: #fdf2e9;
+    border: 3px solid;
+}
+
+.red-side .avatar {
+    color: #c0392b;
+    border-color: #c0392b;
+}
+
+.black-side .avatar {
+    color: #2c3e50;
+    border-color: #2c3e50;
+}
+
+.info-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.name {
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.side-label {
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.red-side .side-label {
+    color: #e74c3c;
+}
+
+.black-side .side-label {
+    color: #bdc3c7;
+}
+
+.timer-box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.time {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #ffffff;
+    font-variant-numeric: tabular-nums;
+}
+
+.time.warning {
+    color: #e74c3c;
+    animation: flash 1s infinite;
+}
+
+.turn-indicator {
+    font-size: 0.8rem;
+    color: #f1c40f;
+    font-style: italic;
+    margin-top: 2px;
+}
+
+@keyframes flash {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
