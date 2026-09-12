@@ -12,10 +12,15 @@ import chess.server.protocol.MessageType;
 import chess.server.protocol.ServerMessage;
 import chess.server.protocol.payload.GamePayload;
 import chess.server.protocol.payload.MovePayload;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-
-import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class GameService {
@@ -23,9 +28,74 @@ public class GameService {
     private final SessionService sessionService;
     private final RoomService roomService;
 
+    // Hàng đợi Min-Heap cho bộ đếm giờ
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private final Map<String, ScheduledFuture<?>> roomTimers = new ConcurrentHashMap<>();
+
     public GameService(SessionService sessionService, @Lazy RoomService roomService) {
         this.sessionService = sessionService;
         this.roomService = roomService;
+    }
+
+    public void cancelTimeout(String roomId) {
+        ScheduledFuture<?> existing = roomTimers.remove(roomId);
+        if (existing != null) {
+            existing.cancel(false);
+        }
+    }
+
+    private void scheduleTimeout(Room room) {
+        cancelTimeout(room.getRoomId());
+
+        Game game = room.getGame();
+        if (game == null || game.isGameOver()) return;
+
+        long remainingTime = game.isRedTurn() ? game.getRedTimeMillis() : game.getBlackTimeMillis();
+        
+        ScheduledFuture<?> future = scheduler.schedule(() -> {
+            handleTimeout(room);
+        }, remainingTime, TimeUnit.MILLISECONDS);
+
+        roomTimers.put(room.getRoomId(), future);
+    }
+
+    private void handleTimeout(Room room) {
+        Game game = room.getGame();
+        if (game == null || game.isGameOver()) return;
+
+        long elapsed = System.currentTimeMillis() - game.getTurnStartTime();
+        long remaining = game.isRedTurn() ? game.getRedTimeMillis() : game.getBlackTimeMillis();
+        
+        // Nếu thực sự hết giờ
+        if (elapsed >= remaining) {
+            game.setGameOver(true);
+            boolean isRedTurn = game.isRedTurn();
+            
+            if (isRedTurn) {
+                game.setRedTimeMillis(0);
+            } else {
+                game.setBlackTimeMillis(0);
+            }
+            
+            GameResult result = isRedTurn ? GameResult.BLACK_WIN : GameResult.RED_WIN;
+            game.setResult(result);
+            
+            RoomPlayer winner = findPlayerBySide(room, isRedTurn ? Side.BLACK : Side.RED);
+            RoomPlayer loser = findPlayerBySide(room, isRedTurn ? Side.RED : Side.BLACK);
+
+            ServerMessage msg = new ServerMessage(MessageType.GAME_OVER);
+            GamePayload gp = new GamePayload();
+            gp.setRoomId(room.getRoomId());
+            gp.setWinner(winner != null ? winner.getSessionId() : null);
+            gp.setLoser(loser != null ? loser.getSessionId() : null);
+            gp.setReason("Hết giờ");
+            gp.setResult(result);
+            msg.setGamePayload(gp);
+            
+            sessionService.broadcastToRoom(room, msg);
+            room.finishGame();
+            roomTimers.remove(room.getRoomId());
+        }
     }
 
     private String sideToColorString(Side side) {
@@ -78,6 +148,8 @@ public class GameService {
         msg.setGamePayload(gp);
 
         sessionService.broadcastToRoom(room, msg);
+        
+        scheduleTimeout(room);
     }
 
     public void handleMove(String sessionId, Room room, MovePayload payload) {
@@ -211,5 +283,7 @@ public class GameService {
         mp.setBlackTime(game.getBlackTimeMillis());
         msg.setMovePayload(mp);
         sessionService.broadcastToRoom(room, msg);
+        
+        scheduleTimeout(room);
     }
 }

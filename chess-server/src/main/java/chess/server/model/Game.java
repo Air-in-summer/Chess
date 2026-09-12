@@ -5,7 +5,7 @@ import chess.server.model.Definition.GameResult;
 
 public class Game {
 
-    private static final long INITIAL_TIME_MILLIS = 10 * 60 * 1000L;
+    private static final long INITIAL_TIME_MILLIS = 1 * 60 * 1000L;
 
     private Piece[][] board;
 

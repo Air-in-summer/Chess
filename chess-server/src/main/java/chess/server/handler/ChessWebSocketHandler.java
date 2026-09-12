@@ -44,8 +44,8 @@ public class ChessWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-        roomService.disconnect(session.getId());
         sessionService.removeSession(session.getId());
+        roomService.disconnect(session.getId());
         System.out.println("[WebSocket] Client ngắt kết nối: " + session.getId());
     }
 }

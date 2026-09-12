@@ -46,7 +46,7 @@ public class SessionService {
         try {
             String json = objectMapper.writeValueAsString(message);
             session.sendMessage(new TextMessage(json));
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.err.println("[SessionService] Gửi tin nhắn thất bại tới " + sessionId + ": " + e.getMessage());
         }
     }

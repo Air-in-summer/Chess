@@ -217,6 +217,7 @@ public class RoomService {
                 sessionService.sendToSession(owner.getSessionId(), msg);
             }
         } else if (status == RoomStatus.PLAYING) {
+            gameService.cancelTimeout(room.getRoomId());
             // Tìm người thắng (người còn lại)
             RoomPlayer winner = null;
             for (RoomPlayer rp : room.getPlayers()) {
@@ -230,6 +231,8 @@ public class RoomService {
                 GameResult result = winner.getPlayerSide() == Side.RED ? GameResult.RED_WIN : GameResult.BLACK_WIN;
                 room.getGame().setResult(result);
                 room.getGame().setGameOver(true);
+
+                System.out.println("DEBUG: Sending GAME_OVER to room " + room.getRoomId() + ". Winner: " + winner.getSessionId() + ", Loser: " + sessionId);
 
                 ServerMessage msg = new ServerMessage(MessageType.GAME_OVER);
                 GamePayload gp = new GamePayload();
