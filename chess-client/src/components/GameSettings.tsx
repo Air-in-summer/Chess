@@ -4,9 +4,10 @@ import { soundPlayer } from '../utils/soundPlayer';
 
 interface Props {
     onSurrender: () => void;
+    isGameOver?: boolean;
 }
 
-export const GameSettings: React.FC<Props> = ({ onSurrender }) => {
+export const GameSettings: React.FC<Props> = ({ onSurrender, isGameOver }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isMuted, setIsMuted] = useState(soundPlayer.getMuted());
     const menuRef = useRef<HTMLDivElement>(null);
@@ -33,9 +34,14 @@ export const GameSettings: React.FC<Props> = ({ onSurrender }) => {
     };
 
     const handleSurrender = () => {
-        if (window.confirm("Bạn có chắc chắn muốn đầu hàng không?")) {
+        if (isGameOver) {
             setIsOpen(false);
-            onSurrender();
+            onSurrender(); // Đã hết game thì thoát thẳng, onSurrender lúc này đang gọi hàm leave
+        } else {
+            if (window.confirm("Bạn có chắc chắn muốn đầu hàng không?")) {
+                setIsOpen(false);
+                onSurrender();
+            }
         }
     };
 
@@ -51,7 +57,7 @@ export const GameSettings: React.FC<Props> = ({ onSurrender }) => {
                         {isMuted ? '🔇 Bật Âm Thanh' : '🔊 Tắt Âm Thanh'}
                     </button>
                     <button className="menu-item surrender-btn" onClick={handleSurrender}>
-                        🏳️ Đầu Hàng
+                        {isGameOver ? '🚪 Thoát Phòng' : '🏳️ Đầu Hàng'}
                     </button>
                 </div>
             )}

@@ -41,7 +41,7 @@ export const PlayerInfo: React.FC<Props> = ({ side, timeMillis, isTurn, isMe }) 
     return (
         <div className={`player-info-container ${isTurn ? 'active-turn' : ''} ${sideClass}`}>
             <div className="player-details">
-                <div className="avatar">
+                <div className="avatar notranslate" translate="no">
                     {avatarChar}
                 </div>
                 <div className="info-text">

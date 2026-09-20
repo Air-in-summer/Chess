@@ -1,3 +1,7 @@
+/**
+ * Định nghĩa giao thức giao tiếp (Communication Protocol) giữa Client và Server qua WebSocket.
+ * Chứa các Enum (MessageType, RoomStatus...) và Interface (Payloads) để đảm bảo đồng bộ kiểu dữ liệu hai chiều.
+ */
 export enum MessageType {
     // Client to Server
     CREATE_ROOM = 'CREATE_ROOM',
@@ -5,6 +9,7 @@ export enum MessageType {
     READY = 'READY',
     UNREADY = 'UNREADY',
     MOVE = 'MOVE',
+    SURRENDER = 'SURRENDER',
     LEAVE = 'LEAVE',
     
     // Server to Client

@@ -13,6 +13,14 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Class SessionService chịu trách nhiệm quản lý toàn bộ các kết nối WebSocket (sessions) của hệ thống.
+ * Chức năng chính bao gồm:
+ * - Lưu trữ danh sách các session đang mở (active sessions) trong bộ nhớ.
+ * - Cung cấp các hàm tiện ích để parse Java Object thành chuỗi JSON một cách tối ưu.
+ * - Đảm nhiệm việc gửi tin nhắn (ServerMessage) đến một client cụ thể hoặc phát sóng (broadcast) tới toàn bộ người chơi trong phòng.
+ * Class này đóng vai trò cách ly tầng giao tiếp mạng (network communication) khỏi logic nghiệp vụ (business logic) của game.
+ */
 @Service
 public class SessionService {
 

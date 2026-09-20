@@ -1,7 +1,7 @@
 import { Piece } from '../types/protocol';
 
 export interface PieceInfo {
-    char: string;       // Ký tự Hán
+    char: string;       // Ký tự hán
     color: string;      // Màu chữ và viền
     fillColor: string;  // Màu nền quân cờ
 }

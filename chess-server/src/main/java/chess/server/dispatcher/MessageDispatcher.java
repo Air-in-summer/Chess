@@ -11,6 +11,13 @@ import chess.server.service.RoomService;
 import chess.server.service.SessionService;
 import org.springframework.stereotype.Component;
 
+/**
+ * Class MessageDispatcher đóng vai trò là Front Controller / Bộ định tuyến trung tâm của hệ thống WebSocket.
+ * Mọi tin nhắn (ClientMessage) gửi từ Frontend đều đi qua đây đầu tiên. Nhiệm vụ của nó:
+ * - Phân loại tin nhắn dựa trên MessageType.
+ * - Điều hướng (dispatch) yêu cầu đến đúng các Service xử lý nghiệp vụ tương ứng (RoomService, GameService).
+ * - Gom nhóm và bắt các Exception (vd: RoomException) sinh ra từ tầng nghiệp vụ để trả về thông báo lỗi chuẩn hóa cho Client.
+ */
 @Component
 public class MessageDispatcher {
 
@@ -40,6 +47,9 @@ public class MessageDispatcher {
                     break;
                 case UNREADY:
                     roomService.unready(sessionId);
+                    break;
+                case SURRENDER:
+                    gameService.surrender(sessionId);
                     break;
                 case LEAVE:
                     roomService.leave(sessionId);

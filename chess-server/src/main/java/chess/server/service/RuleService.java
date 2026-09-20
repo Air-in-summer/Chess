@@ -11,8 +11,16 @@ import chess.server.service.rule.Knight;
 import chess.server.service.rule.Pawn;
 import chess.server.service.rule.Rook;
 
+/**
+ * Class RuleService hoạt động kiểm tra luật lệ  của trò chơi. Là class tĩnh (static).
+ * Chức năng cốt lõi:
+ * - Cung cấp logic xác thực nước đi cho từng loại quân cờ riêng biệt thông qua Strategy Pattern (trả về IPiece).
+ * - Đánh giá trạng thái tổng thể của bàn cờ: kiểm tra xem Tướng có đang bị chiếu hay không (Check), có bị chiếu hết không (Checkmate).
+ * - Phát hiện và ngăn chặn các nước đi vi phạm luật (vd: luật hai Tướng đối mặt, di chuyển khiến Tướng phe mình bị chiếu).
+ * Class này hoàn toàn stateless (không lưu trạng thái), chỉ tính toán dựa trên dữ liệu đầu vào.
+ */
 public class RuleService {
-
+    
     public static IPiece getPieceBehaviour(Piece piece) {
         switch (piece) {
             case rP:

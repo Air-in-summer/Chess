@@ -1,5 +1,5 @@
 import React from 'react';
-import { GameResult, Side } from '../types/protocol';
+import { GameResult } from '../types/protocol';
 import type { GamePayload } from '../types/protocol';
 import './GameOverModal.css';
 
@@ -7,9 +7,10 @@ interface Props {
     gameResult: GamePayload;
     mySessionId: string | null;
     onClose: () => void;
+    onHide?: () => void;
 }
 
-export const GameOverModal: React.FC<Props> = ({ gameResult, mySessionId, onClose }) => {
+export const GameOverModal: React.FC<Props> = ({ gameResult, mySessionId, onClose, onHide }) => {
     let title = "Hòa Cờ";
     let message = gameResult.reason || "Trận đấu kết thúc với kết quả hòa.";
     let statusClass = "draw";
@@ -46,6 +47,11 @@ export const GameOverModal: React.FC<Props> = ({ gameResult, mySessionId, onClos
                 <h1 className="modal-title">{title}</h1>
                 <p className="modal-reason">{message}</p>
                 <div className="modal-actions">
+                    {onHide && (
+                        <button className="btn secondary" onClick={onHide} style={{ marginRight: '10px' }}>
+                            Xem bàn cờ
+                        </button>
+                    )}
                     <button className="btn primary" onClick={onClose}>
                         Xác Nhận & Thoát
                     </button>

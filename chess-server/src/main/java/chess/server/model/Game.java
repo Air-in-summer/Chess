@@ -5,7 +5,7 @@ import chess.server.model.Definition.GameResult;
 
 public class Game {
 
-    private static final long INITIAL_TIME_MILLIS = 1 * 60 * 1000L;
+    private static final long INITIAL_TIME_MILLIS = 10 * 60 * 1000L;
 
     private Piece[][] board;
 
@@ -33,9 +33,27 @@ public class Game {
         isBlackInCheck = false;
         redTimeMillis = INITIAL_TIME_MILLIS;
         blackTimeMillis = INITIAL_TIME_MILLIS;
-        turnStartTime = 0;
+        turnStartTime = System.currentTimeMillis();
         result = GameResult.ONGOING;
         isGameOver = false;
+    }
+
+    // Đổi lượt và trừ thời gian của người vừa đi. Hai việc này bắt buộc phải đi cùng nhau.
+    public void switchTurn() {
+        long elapsed = System.currentTimeMillis() - turnStartTime;
+        if (isRedTurn) {
+            redTimeMillis -= elapsed;
+        } else {
+            blackTimeMillis -= elapsed;
+        }
+        isRedTurn = !isRedTurn;
+        turnStartTime = System.currentTimeMillis();
+    }
+
+    // Kết thúc game. Cả result và isGameOver phải được set cùng lúc, không được tách rời.
+    public void endGame(GameResult result) {
+        this.result = result;
+        this.isGameOver = true;
     }
 
     private void initializeBoard() {
@@ -99,10 +117,6 @@ public class Game {
         return isRedTurn;
     }
 
-    public void setRedTurn(boolean redTurn) {
-        isRedTurn = redTurn;
-    }
-
     public boolean isRedInCheck() {
         return isRedInCheck;
     }
@@ -123,39 +137,19 @@ public class Game {
         return redTimeMillis;
     }
 
-    public void setRedTimeMillis(long redTimeMillis) {
-        this.redTimeMillis = redTimeMillis;
-    }
-
     public long getBlackTimeMillis() {
         return blackTimeMillis;
-    }
-
-    public void setBlackTimeMillis(long blackTimeMillis) {
-        this.blackTimeMillis = blackTimeMillis;
     }
 
     public GameResult getResult() {
         return result;
     }
 
-    public void setResult(GameResult result) {
-        this.result = result;
-    }
-
     public boolean isGameOver() {
         return isGameOver;
     }
 
-    public void setGameOver(boolean gameOver) {
-        isGameOver = gameOver;
-    }
-
     public long getTurnStartTime() {
         return turnStartTime;
-    }
-
-    public void setTurnStartTime(long turnStartTime) {
-        this.turnStartTime = turnStartTime;
     }
 }

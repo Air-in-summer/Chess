@@ -17,11 +17,13 @@ function App() {
         gameResultModal,
         lastMove,
         moveHistory,
+        historySteps,
         mySessionId,
         mySide,
         ready,
         unready,
         leave,
+        surrender,
         sendMove
     } = useWebSocket();
 
@@ -66,8 +68,10 @@ function App() {
                     gameResultModal={gameResultModal}
                     lastMove={lastMove}
                     moveHistory={moveHistory}
+                    historySteps={historySteps}
                     onMove={sendMove}
                     leave={leave}
+                    surrender={surrender}
                 />
             )}
         </div>

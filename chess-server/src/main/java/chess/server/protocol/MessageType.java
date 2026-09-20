@@ -21,6 +21,10 @@ public enum MessageType {
     // Payload: MovePayload.fromX, fromY, toX, toY.
     MOVE,
 
+    // Client xin đầu hàng.
+    // Payload: không cần.
+    SURRENDER,
+
     // Client chủ động rời phòng.
     // Payload: không cần.
     LEAVE,

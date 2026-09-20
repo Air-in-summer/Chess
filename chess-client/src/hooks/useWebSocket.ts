@@ -12,6 +12,11 @@ export interface MoveRecord {
     black: string;
 }
 
+export interface HistoryStep {
+    board: Piece[][];
+    lastMove: { fromX: number; fromY: number; toX: number; toY: number } | null;
+}
+
 export function useWebSocket() {
     const [connected, setConnected] = useState(false);
     const [currentScreen, setCurrentScreen] = useState<ScreenType>('HOME');
@@ -26,7 +31,12 @@ export function useWebSocket() {
     const gameStateRef = useRef<GamePayload | null>(null);
     const [gameResultModal, setGameResultModal] = useState<GamePayload | null>(null);
     const [lastMove, setLastMove] = useState<{fromX: number, fromY: number, toX: number, toY: number} | null>(null);
+    // moveHistory: Chỉ lưu trữ mảng text biên bản (vd: "P2.5") để đổ vào UI bảng danh sách bên cạnh bàn cờ.
     const [moveHistory, setMoveHistory] = useState<MoveRecord[]>([]);
+    
+    // historySteps: Lưu trữ một bản sao "snapshot" sâu (mảng Piece[][]) của trạng thái bàn cờ tại mỗi nước đi.
+    // Dữ liệu này dùng để tua ngược bàn cờ về quá khứ và vẽ lại lên Canvas mà không cần tính toán lại logic.
+    const [historySteps, setHistorySteps] = useState<HistoryStep[]>([]);
 
     const myRoleRef = useRef(myRole);
     
@@ -92,6 +102,10 @@ export function useWebSocket() {
                         setGameResultModal(null);
                         setLastMove(null);
                         setMoveHistory([]);
+                        setHistorySteps([{
+                            board: msg.gamePayload.board || [],
+                            lastMove: null
+                        }]);
                     }
                     break;
                 }
@@ -154,6 +168,11 @@ export function useWebSocket() {
                                 checkSide: p.checkSide
                             };
 
+                            setHistorySteps(prev => [...prev, {
+                                board: newBoard,
+                                lastMove: { fromX: p.fromX!, fromY: p.fromY!, toX: p.toX!, toY: p.toY! }
+                            }]);
+
                             // 3. Trigger React re-render
                             setGameState(gameStateRef.current);
                         }
@@ -195,6 +214,7 @@ export function useWebSocket() {
         setGameResultModal(null);
         setLastMove(null);
         setMoveHistory([]);
+        setHistorySteps([]);
         setErrorMsg(null);
     }, []);
 
@@ -213,7 +233,11 @@ export function useWebSocket() {
         wsService.send({ type: MessageType.LEAVE });
         resetToHome();
     };
-    
+
+    const surrender = () => {
+        wsService.send({ type: MessageType.SURRENDER });
+    };
+
     const sendMove = (fromX: number, fromY: number, toX: number, toY: number) => {
         wsService.send({
             type: MessageType.MOVE,
@@ -232,12 +256,14 @@ export function useWebSocket() {
         gameResultModal,
         lastMove,
         moveHistory,
+        historySteps,
         errorMsg,
         createRoom,
         joinRoom,
         ready,
         unready,
         leave,
+        surrender,
         sendMove,
         resetToHome,
         setErrorMsg
