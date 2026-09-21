@@ -1,4 +1,4 @@
-# Cờ Tướng Online (Xiangqi Web)
+# Cờ Tướng 
 
 Một dự án nhỏ (Pet Project) thử nghiệm xây dựng game Cờ Tướng trực tuyến thời gian thực giữa 2 người chơi bằng React (TypeScript) và Spring Boot WebSocket.
 
